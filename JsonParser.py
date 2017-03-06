@@ -13,21 +13,28 @@ with open('dataTest.json') as f:
         else:
             continue
 
-
-
 def subtract_lists(a, b):
     for i, val in enumerate(a):
             val = val - b[i]
     return a
 
 
-array =[]
+diffArray = []
 
-array = subtract_lists(arrayOfS1A, arrayOfS1W)
-print (array[0:14])
+diffArray = subtract_lists(arrayOfS1A, arrayOfS1W)
 
-    
+i = 0;
+diffArray = [str(i) for i in diffArray]
 
+j=0
+for n in diffArray:
+    stringToAdd = ("[" + str(j) + ", ")
+    stringToAdd = stringToAdd + n + '],'
+    diffArray[j] = stringToAdd
+    j = j+1
+
+
+print("\n".join(diffArray))
         
 
         
