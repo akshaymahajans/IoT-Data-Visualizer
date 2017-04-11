@@ -1,15 +1,25 @@
 import json
 
-def findRaw(dictionary):
-    if 'raw' in dictionary:
+def findRaw(jsonLine):
+    if 'raw' in jsonLine:
         return True
     else:
         return False
 
+def findVoltage(voltage, unit):
+    if voltage in unit:
+        return True
+    else:
+        return False
+
+    
 def parseJson(filename,
               lineNumber,
-              wholeFile=True):
-    arrayOfUnits = []
+              voltageType,
+              wholeFile=True,
+              ):
+    errorMsg = "Could not find proper voltage for this element."
+    arrayOfVolts = []
     jsonArray = ["Filler first element"]
     
     if lineNumber < 0 or lineNumber != 0 and wholeFile:
@@ -17,22 +27,31 @@ def parseJson(filename,
 
     with open(filename) as f:
         for line in f:
-            dictionary = json.loads(line)
-            jsonArray.append(dictionary)
+            jsonLine = json.loads(line)
+            jsonArray.append(jsonLine)
 
         if(wholeFile):
                 for i in jsonArray:
                     if findRaw(i):
-                        unit = i['raw']
-                        arrayOfUnits.append(unit)
+                       unit = i['raw']
+                       if(findVoltage(voltageType, unit)):
+                           arrayOfVolts.append(unit[voltageType])
+                       else:
+                           print(errorMsg)
+                           arrayOfVolts.append(errorMsg)
                     else:
-                       print("Could not find raw for this element.")
-                       continue                        
+                        continue
         else:
-            dictionary = jsonArray[lineNumber]
-            if findRaw(dictionary):
-                unit = dictionary['raw']
-                arrayOfUnits.append(unit)
+            jsonLine = jsonArray[lineNumber]
+            if findRaw(jsonLine):
+                unit = jsonLine['raw']
+                if(findVoltage(voltageType, unit)):
+                    arrayOfVolts.append(unit[voltageType])
+                else:
+                    print(errorMsg)
             else:
-                print("Could not find raw for this element.")
-    return arrayOfUnits
+                print("Could not find raw in this line")
+
+    return arrayOfVolts
+
+print(parseJson('dataTest.json', 2, "S1A", False))
